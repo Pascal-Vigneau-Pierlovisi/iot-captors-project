@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+
+{% block title %}Gestion - IOT{% endblock %}
+
+{% block content %}
+
+<div class="grid grid-cols-1 gap-5 sm:grid-cols-4 mt-4">
+    <div class="bg-white overflow-hidden shadow sm:rounded-lg dark:bg-gray-900">
+        <div class="px-4 py-5 sm:p-6">
+            <dl>
+                <dt class="text-sm text-center leading-5 font-medium text-gray-500 truncate dark:text-gray-400">Dernière mise à jour :</dt>
+                <dd class="mt-1 text-3xl text-center leading-9 font-semibold text-indigo-600 dark:text-indigo-400" id="time"></dd>
+            </dl>
+        </div>
+    </div>
+    <div class="bg-white overflow-hidden shadow sm:rounded-lg dark:bg-gray-900">
+        <div class="px-4 py-5 sm:p-6">
+            <dl>
+                <dt class="text-sm text-center leading-5 font-medium text-gray-500 truncate dark:text-gray-400">Température :</dt>
+                <dd class="mt-1 text-center text-3xl leading-9 font-semibold text-indigo-600 dark:text-indigo-400" id="last_temp"></dd>
+            </dl>
+        </div>
+    </div>
+    <div class="bg-white overflow-hidden shadow sm:rounded-lg dark:bg-gray-900">
+        <div class="px-4 py-5 sm:p-6">
+            <dl>
+                <dt class="text-sm text-center leading-5 font-medium text-gray-500 truncate dark:text-gray-400">Taux d'humidité :</dt>
+                <dd class="mt-1 text-center text-3xl leading-9 font-semibold text-indigo-600 dark:text-indigo-400" id="last_humidity"></dd>
+            </dl>
+        </div>
+    </div>
+    <div class="bg-white overflow-hidden shadow sm:rounded-lg dark:bg-gray-900">
+        <div class="px-4 py-5 sm:p-6">
+            <dl>
+                <dt class="text-sm text-center leading-5 font-medium text-gray-500 truncate dark:text-gray-400">Taux de sonorité :</dt>
+                <dd class="mt-1 text-center text-3xl leading-9 font-semibold text-indigo-600 dark:text-indigo-400" id="last_sound"></dd>
+            </dl>
+        </div>
+    </div>
+
+    <div style="margin-left: 200px;">
+        <canvas id="myChart" width="800" height="400"></canvas>
+    </div>
+</div>
+
+
+<div class="flex justify-center py-4">
+    <button id="openModalBtn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+        Envoyer une alerte
+    </button>
+</div>
+
+<!-- Popup pour envoyer le message -->
+<div id="myModal" class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center hidden">
+    <div class="bg-white rounded-lg p-8 w-96">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-bold">Envoyer une alerte</h2>
+            <button id="closeModalBtn" class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        <form id="alert-form" class="space-y-4">
+            <div>
+                <label for="message" class="block font-medium text-gray-700">Message</label>
+                <input id="message" name="message" type="text" class="mt-1 p-2 block w-full border rounded-md">
+            </div>
+            <div>
+                <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Envoyer
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        var myChart; // Déclaration de la variable myChart en dehors de la fonction pour qu'elle soit accessible globalement
+    
+        function fetchData() {
+            fetch('/gestion/json')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('time').innerText = data.time;
+                document.getElementById('last_temp').innerText = data.last_temp + " °C";
+                document.getElementById('last_humidity').innerText = data.last_humidity + "%";
+                document.getElementById('last_sound').innerText = data.last_sound;
+                
+                // Mise à jour du graphique
+                var tempValues = data.temp_data.map(record => record.payload);
+                var humidityValues = data.humidity_data.map(record => record.payload);
+                var soundValues = data.sound_data.map(record => record.payload);
+                
+                if (!myChart) {
+                    var ctx = document.getElementById('myChart').getContext('2d');
+                    myChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: Array.from(Array(tempValues.length).keys()), // Utiliser des indices comme étiquettes
+                            datasets: [
+                                {
+                                    label: 'Température (°C)',
+                                    data: tempValues,
+                                    borderColor: 'rgb(255, 99, 132)',
+                                    borderWidth: 2
+                                },
+                                {
+                                    label: 'Humidité (%)',
+                                    data: humidityValues,
+                                    borderColor: 'rgb(54, 162, 235)',
+                                    borderWidth: 2
+                                },
+                                {
+                                    label: 'Son',
+                                    data: soundValues,
+                                    borderColor: 'rgb(75, 192, 192)',
+                                    borderWidth: 2
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: false,
+                            scales: {
+                                x: {
+                                    title: {
+                                        display: false,
+                                        text: ""
+                                    }
+                                },
+                                y: {
+                                    title: {
+                                        display: false,
+                                        text: ''
+                                    }
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    myChart.data.datasets[0].data = tempValues;
+                    myChart.data.datasets[1].data = humidityValues;
+                    myChart.data.datasets[2].data = soundValues;
+                    myChart.update();
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    
+        fetchData(); // Appel initial au chargement de la page
+        setInterval(fetchData, 1000); // Actualisation toutes les 5 secondes
+    </script>
+
+    <script>
+        // Récupération du bouton et de la popup
+        var openModalBtn = document.getElementById("openModalBtn");
+        var modal = document.getElementById("myModal");
+        var closeModalBtn = document.getElementById("closeModalBtn");
+
+        // Lorsque l'utilisateur clique sur le bouton, ouvrir la popup
+        openModalBtn.onclick = function() {
+            modal.classList.add("flex");
+            modal.classList.remove("hidden");
+        }
+
+        // Lorsque l'utilisateur clique sur le bouton de fermeture, fermer la popup
+        closeModalBtn.onclick = function() {
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+        }
+
+        // Fermer la popup si l'utilisateur clique en dehors de celle-ci
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.classList.add("hidden");
+                modal.classList.remove("flex");
+            }
+        }
+
+        // Envoyer le message via une requête POST Flask
+        document.getElementById("alert-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            var message = document.getElementById("message").value;
+            fetch("/send_alert", {
+                method: "POST",
+                body: JSON.stringify({message: message}),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Erreur lors de l'envoi de l'alerte");
+                }
+                alert("Alerte envoyée avec succès !");
+                // Réinitialiser le champ de message
+                document.getElementById("message").value = "";
+                // Fermer la popup
+                modal.classList.add("hidden");
+                modal.classList.remove("flex");
+            })
+            .catch(error => {
+                console.error("Erreur:", error.message);
+                alert("Une erreur est survenue lors de l'envoi de l'alerte.");
+            });
+        });
+    </script>
+        
+{% endblock %}

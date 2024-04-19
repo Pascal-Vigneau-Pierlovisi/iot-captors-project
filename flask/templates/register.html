@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Enregistrement - IOT{% endblock %}
+
+{% block content %}
+<div class="bg-white p-8 rounded shadow-md max-w-md mx-auto mt-8">
+    <h2 class="text-xl font-semibold mb-4 text-center">S'enregistrer</h2>
+    {% if error_message %}
+    <div class="mb-4 text-red-500 text-center">
+        {{ error_message }}
+    </div>
+    {% endif %}
+    <form action="/register" method="post">
+        <div class="mb-4">
+            <label for="username" class="block text-gray-700 font-bold mb-2">Nom d'utilisateur</label>
+            <input type="text" id="username" name="username" class="form-input w-full" placeholder="Entrez votre nom d'utilisateur" required>
+        </div>
+        <div class="mb-4">
+            <label for="password" class="block text-gray-700 font-bold mb-2">Mot de passe</label>
+            <input type="password" id="password" name="password" class="form-input w-full" placeholder="Entrez votre mot de passe" required>
+        </div>
+        <div class="mb-6">
+            <label for="password_confirm" class="block text-gray-700 font-bold mb-2">Confirmation du mot de passe</label>
+            <input type="password" id="password_confirm" name="password_confirm" class="form-input w-full" placeholder="Confirmez votre mot de passe" required>
+        </div>
+        <button type="submit" class="bg-yellow-400 text-white font-bold py-2 px-4 rounded hover:bg-yellow-200 w-full">S'enregistrer</button>
+    </form>
+    {% if success_message %}
+    <div class="mb-4 text-green-500 text-center">
+        {{ success_message }}
+    </div>
+    {% endif %}
+    <p class="text-gray-700 text-sm mt-4 text-center">Vous avez déjà un compte ? <a href="/login" class="text-blue-500 hover:underline">Se connecter</a>.</p>
+</div>
+{% endblock %}

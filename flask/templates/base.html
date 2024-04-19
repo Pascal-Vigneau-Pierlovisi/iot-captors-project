@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}IOT{% endblock %}</title>
+    <!-- Liens CDN de Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@^2.0.3/dist/tailwind.min.css" rel="stylesheet">
+
+    <!-- Liens CDN de Font Awesome CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body class="flex flex-col min-h-screen bg-gray-100">
+
+    <nav class="bg-gray-800">
+        <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+          <div class="relative flex h-16 items-center justify-between">
+            <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+              <!-- Mobile menu button-->
+              <button type="button" class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+                <span class="absolute -inset-0.5"></span>
+                <span class="sr-only">Open main menu</span>
+                <!--
+                  Icon when menu is closed.
+      
+                  Menu open: "hidden", Menu closed: "block"
+                -->
+                <svg class="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg>
+                <!--
+                  Icon when menu is open.
+      
+                  Menu open: "block", Menu closed: "hidden"
+                -->
+                <svg class="hidden h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+              <div class="flex flex-shrink-0 items-center">
+                <img class="h-8 w-auto" src="https://cdn-icons-png.flaticon.com/512/197/197549.png" alt="Your Company">
+              </div>
+              <div class="hidden sm:ml-6 sm:block">
+                <div class="flex space-x-4">
+                  <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
+                  <a href="{{ url_for('index') }}" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Accueil</a>
+                  {% if 'user_id' in session %} 
+                  <a href="/gestion" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Gestion</a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+
+              
+
+
+              {% if 'user_id' in session %}
+      
+              <!-- Profile dropdown -->
+              <div class="relative ml-3" id="user-menu">
+                <div class="">
+                    <button type="button" class="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+                        <span class="absolute -inset-1.5"></span>
+                        <span class="sr-only">Open user menu</span>
+                        <img class="h-8 w-8 rounded-full" src="data:image/jpeg;base64,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" alt="">
+                    </button>
+                </div>
+
+                <!-- Dropdown menu, show/hide based on menu state -->
+                <div class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none hidden" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
+                  <!-- Active: "bg-gray-100", Not Active: "" -->
+                  <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</a>
+                  <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-1">Settings</a>
+                  <a href="/logout" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-2">Se déconnecter</a>
+              </div>
+              {% else %}
+
+              <a href="{{ url_for('showLogin') }}" class="text-black-300 bg-yellow-400 hover:bg-yellow-200 hover:text-black-200 rounded-md px-3 py-2 text-sm font-medium">Se connecter</a>
+
+              {% endif %}
+            </div>
+            </div>
+          </div>
+        </div>
+      
+        <!-- Mobile menu, show/hide based on menu state. -->
+        <div class="sm:hidden" id="mobile-menu">
+          <div class="space-y-1 px-2 pb-3 pt-2">
+            <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
+            <a href="/" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Accueil</a>
+            {% if 'user_id' in session %}
+            <a href="/gestion" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Drive</a>
+            {% endif %}
+          </div>
+        </div>
+      </nav>
+
+    <!-- Contenu principal -->
+    <main class="container mx-auto px-6 py-4 flex-grow">
+        {% block content %}
+        <!-- Ceci est le bloc où le contenu spécifique de chaque page sera inséré -->
+        {% endblock %}
+    </main>
+
+    <footer class="bg-gray-800 text-white text-center py-4">
+        <p>&copy; 2024 Louiza, Pascal & Thomas tous droits réservés.</p>
+    </footer>
+
+
+    {% block scripts %}
+        <!-- Ceci est le bloc où les scripts de chaque page seront insérés-->
+    {% endblock %}
+
+
+     <!-- Liens CDN de Tailwind JavaScript -->
+     <script src="https://cdn.jsdelivr.net/npm/tailwindcss@^2.0.3/dist/tailwind.min.js"></script>
+
+     <script>
+      // Sélectionnez le menu mobile
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        // Par défaut, cachez le menu mobile
+        mobileMenu.classList.add('hidden');
+
+        // Sélectionnez le bouton de menu mobile
+        const mobileMenuButton = document.querySelector('[aria-controls="mobile-menu"]');
+
+        // Ajoutez un écouteur d'événements au bouton de menu mobile
+        mobileMenuButton.addEventListener('click', () => {
+            // Basculez l'attribut aria-expanded pour indiquer l'état du menu
+            const expanded = mobileMenuButton.getAttribute('aria-expanded') === 'true' || false;
+            mobileMenuButton.setAttribute('aria-expanded', !expanded);
+            
+            // Basculez la visibilité du menu mobile
+            mobileMenu.classList.toggle('hidden');
+        });
+
+      // Sélectionnez le bouton du menu utilisateur
+    const userMenuButton = document.getElementById('user-menu-button');
+
+    // Sélectionnez le menu utilisateur
+    const userMenu = document.querySelector('[aria-labelledby="user-menu-button"]');
+
+    // Ajoutez un écouteur d'événements au bouton du menu utilisateur
+    userMenuButton.addEventListener('click', () => {
+    // Basculez l'attribut aria-expanded pour indiquer l'état du menu
+    const expanded = userMenuButton.getAttribute('aria-expanded') === 'true' || false;
+    userMenuButton.setAttribute('aria-expanded', !expanded);
+
+    // Basculez la visibilité du menu utilisateur
+    userMenu.classList.toggle('hidden');
+    });
+     </script>
+
+
+</body>
+</html>

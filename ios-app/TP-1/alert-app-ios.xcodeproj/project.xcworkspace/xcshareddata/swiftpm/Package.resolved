@@ -1,0 +1,15 @@
+{
+  "originHash" : "5752a169ef98a5463bdbf72c2c9c5dc7f365cef93e44833c57ded7fab4523d4c",
+  "pins" : [
+    {
+      "identity" : "lightmqtt",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/PasiSalenius/LightMQTT",
+      "state" : {
+        "branch" : "master",
+        "revision" : "cbcc9ef3bf0363f83e9611b712eadf98c87c8ad2"
+      }
+    }
+  ],
+  "version" : 3
+}
