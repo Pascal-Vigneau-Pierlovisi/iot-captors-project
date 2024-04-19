@@ -24,16 +24,21 @@ pour ma part, c'est un VPS sous distribution `Linux Ubuntu 20.04` voici le tutor
 Une fois le `broker MQTT` installé, vous pouvez alors établir une communication entre vos divers `IOT` très facilement.
 
 
-## Schéma de fonctionnement 1️⃣
+## Schéma de fonctionnement (Format objet) 1️⃣
 
 ![Alt text](schema/1.png)
 
-## Schéma de câblage des différents capteurs (ESP32-Thing) 2️⃣
+
+## Schéma de fonctionnement 2️⃣
+
+![Alt text](schema/3.png)
+
+## Schéma de câblage des différents capteurs (ESP32-Thing) 3️⃣
 
 ![Alt text](schema/2.png)
 
 
-## Compétences acquises 3️⃣
+## Compétences acquises 4️⃣
 
 J'ai pu acquérir des compétences plus `approfondies` en IOT.
 Des compétences en `gestion` de projet.
@@ -41,7 +46,7 @@ J'ai également appris l'existence du protocole `MQTT` dont je n'avais pas la co
 J'ai également amélioré mes compétences en `administration système`.
 
 
-## Difficultés rencontrés 4️⃣
+## Difficultés rencontrés 5️⃣
 
 Je n'ai personnellement rencontré aucune réelle difficulté, j'avais déjà fait de l'IOT auparavant, je pense n'avoir rencontré aucune difficulté durant ce projet.
 
